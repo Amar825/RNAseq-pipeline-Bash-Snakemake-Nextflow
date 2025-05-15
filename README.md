@@ -25,4 +25,4 @@ This pipeline analyzes RNA-seq data from the GEO dataset **[GSE37211](https://ww
 
 ***Why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called **[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
 
-Usually, for personal learning projects, people tend to choose only specific parts of the large sequencing data. It is okay for learning purposes, but it won't lead to replicating the paper's figures or any meaningful results.
+Usually, for personal learning projects, people tend to choose only specific parts of the large sequencing data. It is okay for learning purposes, but it won't lead to replicating the paper's figures or any meaningful results. Depending upon your hardware (I did it in 16gb RAM device), this should not pose too big a problem as long as you run sample by sample.
