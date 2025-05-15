@@ -23,4 +23,4 @@ This pipeline analyzes RNA-seq data from the GEO dataset **[GSE37211](https://ww
 - **Source**: Haglund et al., *J Clin Endocrinol Metab*, 2012 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/23024189/))
 
 
-Now, ***why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called  ***Bioinformatic Methods for Next Generation Sequencing Analysis (https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)***
+Now, ***why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called**[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
