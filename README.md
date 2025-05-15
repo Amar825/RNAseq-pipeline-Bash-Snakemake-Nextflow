@@ -23,4 +23,6 @@ This pipeline analyzes RNA-seq data from the GEO dataset **[GSE37211](https://ww
 - **Source**: Haglund et al., *J Clin Endocrinol Metab*, 2012 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/23024189/))
 
 
-Now, ***why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called**[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
+***Why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called **[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
+
+Usually, for personal learning projects, people tend to choose only specific parts of the large sequencing data. It is okay for learning purposes, but it won't lead to replicating the paper's figures or any meaningful results.
