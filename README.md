@@ -1,10 +1,9 @@
 # RNAseq-pipeline-Bash-Snakemake-Nextflow
 
 This bioinformatic pipeline performs a basic RNA-seq analysis. We start by downloading the FASTQ files and end with a Differential Expression Genes list. Of course, we'll do some downstream analysis as well. I'll be using three different methods to do this:
-1. Bash-linear
-2. Snakemake
-3. Nextflow
-
+1. [Bash-linear](bash/bash-readme.md)
+2. [Snakemake](snakemake/snakemake-readme.md)
+3. [Nextflow](nextflow/nextflow-readme.md)
 In every method, the fundamental processes are going to be the same, but there are going to be different ways to achieve that. Each method offers a unique value, which we shall experience on our own, and document like our lives depend on it.
 
 ## Objectives
