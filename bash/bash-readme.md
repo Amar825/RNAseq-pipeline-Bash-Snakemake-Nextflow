@@ -108,8 +108,11 @@ fastqc trimmed_fastq/*.fastq -o trimmed_fastqc -t 4
 
 ![FastQC quality plot for SRR479052 after trimming](images/post_trim_QC.png)
 
-The adapter contamination is gone. The low-quality tail at the 3' end is mostly cleaned up. There’s still a slight quality dip after ~85 bp, but nothing that warrants additional trimming. This is well within acceptable range for downstream alignment
+The adapter contamination is gone. The low-quality tail at the 3' end is mostly cleaned up. There’s still a slight quality dip after ~85 bp, but nothing that warrants additional trimming. This is well within an acceptable range for downstream alignment
 
+
+## Reads Alignment and Quantification
+Now that our reads are cleaned up, it is time to align them to the reference genome and count how many reads map to each gene.
 
 
 
