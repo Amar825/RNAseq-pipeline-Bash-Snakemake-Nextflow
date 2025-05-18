@@ -16,6 +16,22 @@ To begin RNA-seq analysis, we first need to download the raw sequencing data fro
 
 The SRR accession list was retrieved from the [NCBI SRA Run Selector](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=GSE37211) by exporting the "Accession List" for the study. This list was saved as `SRR_Acc_List.txt`, containing one SRR ID per line.
 
+Use the `download_fastqc.sh` script, REMEMBER to make it executable (chmod +x)
+```bash
+#!/bin/bash
+mkdir -p rawReads
+while read id; do
+    fasterq-dump "$id" --split-files --threads 4 -O rawReads/
+done < SRR_Acc_List.txt
+```
+- `--split-files` separates paired-end reads into two files (`_1.fastq` and `_2.fastq`), which is required for downstream tools like STAR for paired-end alignment.
+- `--threads 4` enables multi-threaded downloading what basically means if your computer will use 4 CPU threads in parallel insted on 1 which is default to speeed up conversion from SRA to fastq
+
+
+
+
+
+
 
 
 
