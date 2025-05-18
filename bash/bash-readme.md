@@ -99,6 +99,8 @@ Think of it as a final sweep for junky bases stuck at the end.
 If, after trimming, a read ends up shorter than 36 bases, it’s discarded.
 Reads that short usually don’t align well or uniquely, so better to drop them.
 
+![FastQC quality plot for SRR479052 after trimming](images/post_trim_QC.png)
+
 
 
 
