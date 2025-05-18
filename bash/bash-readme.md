@@ -166,6 +166,52 @@ featureCounts -T 4 -p -t exon -g gene_id \
   Run `mapping_counting_PE.sh` file, making necessary changes according to your working directory. It will run on all samples and at the end, you will get a gene count file for each sample.
   Now we need to merge these per-sample gene count files into a single count matrix using this `merge_counts.R` script.
 
+  ## Differential Expression Analysis
+
+The differential expression analysis was performed using a single R script: `master_deseq2_analysis.R`.
+
+### - **DEG lists**
+
+Generated for both OHT vs Control and DPN vs Control. Significant genes (padj < 0.05) are saved as CSV files in the `results/` directory.
+
+```r
+res <- results(dds, contrast = c("condition", test, control))
+resOrdered <- res[order(res$padj), ]
+res.sig <- resOrdered[resOrdered$padj < 0.05 & !is.na(resOrdered$padj), ]
+write.csv(as.data.frame(res.sig), file = paste0("results/DEG_", contrast_name, ".csv"))
+```
+### Heatmaps
+For each contrast, the top 20 genes (ranked by adjusted p-value) were visualized in a heatmap. Heatmaps show patterns of gene expression across samples 
+```r
+    sigGenes <- head(rownames(resOrdered), 20)
+mat <- assay(vsd)[sigGenes, ]
+selectedSamples <- rownames(subset(coldata, condition %in% c(test, control)))
+mat <- mat[, colnames(mat) %in% selectedSamples]
+mat <- mat - rowMeans(mat)
+
+pheatmap(mat,
+         cluster_rows = TRUE,
+         show_rownames = TRUE,
+         cluster_cols = TRUE,
+         annotation_col = as.data.frame(colData(dds)[, c("condition", "patient")]),
+         filename = paste0("results/heatmap_top20_", contrast_name, ".png"))
+```
+### Volcano PLots
+Volcano plots display log2 fold change vs statistical significance (adjusted p-value) for each gene. This highlights up/down-regulated genes.
+```r
+    volcano <- EnhancedVolcano(res,
+                           lab = rownames(res),
+                           x = 'log2FoldChange',
+                           y = 'padj',
+                           xlim = c(-2, 2),
+                           title = paste(test, 'vs.', control, 'Volcano Plot'),
+                           pCutoff = 0.05,
+                           FCcutoff = 0.2)
+ggsave(paste0("results/volcano_", contrast_name, ".png"), volcano, width = 10, height = 6)
+```
+
+
+
   
 
 
