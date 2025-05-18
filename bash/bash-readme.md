@@ -120,7 +120,7 @@ We’ll use:
 ### STAR Mapping workflow
 STAR works in two steps:
 
-1. **Generate genome index files** (only once) In this step we must provide the reference genome sequence (FASTA file) and annotations (GTF file), from which STAR generates genome indexes used in the 2nd (mapping) step.
+1. **Generate genome index files** (only once) In this step we must provide the reference genome sequence (FASTA file) and annotations (GTF file), from which STAR generates genome indexes used in the 2nd (mapping) step. We use this `build_star_index.sh` file. 
    ```bash
     mkdir -p star_index
 
@@ -129,11 +129,40 @@ STAR works in two steps:
      --genomeDir $index_path \
      --genomeFastaFiles $fasta_path/genome.fa \
      --sjdbGTFfile $GTF_path/annotation.gtf \
-   
      ```
    
 2. **Map reads to the genome** using those index files
+   ```bash
+   for file in trimmed_fastq/*_1P.fastq; do
+    sample=$(basename "$file" _1P.fastq)
+   STAR --runThreadN 4 \
+         --genomeDir $GENOME_DIR \
+         --readFilesIn trimmed_fastq/${sample}_1P.fastq trimmed_fastq/${sample}_2P.fastq \
+         --outFileNamePrefix star_aligned/${sample}_ \
+         --outSAMtype BAM SortedByCoordinate \
+         --outStd Log > logs/${sample}_STAR.log 2>&1
+   ```
+This section maps each sample's paired-end reads to the reference genome using STAR.  
+The output is a BAM file, sorted by genomic coordinate, and saved as: star_aligned/${sample}_Aligned.sortedByCoord.out.bam
 
+### Quantification (FeatureCounts)
+Now that we have the aligned BAM files from STAR, we use `featureCounts` from the **Subread** package to assign those reads to genes.
+The goal here is simple: count how many reads overlap **annotated exons**, grouped by gene. This gives us the raw counts per gene per sample
+  Here’s the part of the script that runs featureCounts on each sample’s BAM file:
+
+```bash
+featureCounts -T 4 -p -t exon -g gene_id \
+    -a $GTF \
+    -o counts/${sample}_gene_counts.txt \
+    star_aligned/${sample}_Aligned.sortedByCoord.out.bam \
+    > logs/${sample}_featureCounts.log 2>&1
+```
+- `-T 4`: use 4 threads to speed things up. It’ll process faster if your machine can handle it.
+- `-p`: tells featureCounts this is **paired-end** data, so it counts read *pairs* (fragments), not individual reads. This matters — otherwise, you'd double-count everything.
+- `-t exon`: we’re only interested in reads that overlap **exons** — the parts of the gene that actually get transcribed. Introns and intergenic regions are ignored.
+- `-g gene_id`: featureCounts groups together all the exons that belong to the same gene, based on the `gene_id` field in your GTF. So you end up with **one count per gene**, not per exon.
+- `-a`: this is your annotation file — same GTF you used when you built the STAR index. It tells featureCounts where genes and exons are.
+- `-o`: name of the output file. It’s a plain-text table with one row per gene and one column for your sample’s counts.
 
 
 
