@@ -42,9 +42,9 @@ All three implementations (Bash, Snakemake, and Nextflow) follow the same biolog
 1. **Download raw FASTQ files**  
    Using `fasterq-dump` to retrieve sequencing data from NCBI SRA.
 2. **Quality control**  
-   Assess raw read quality using **FastQC**, then summarize across samples using **MultiQC**.
+   Assess raw read quality using **FastQC**
 3. **Trimming** *(if needed)*  
-   Adapter and quality trimming using tools like **Trim Galore** or **fastp** (optional, dataset-dependent).
+   Adapter and quality trimming using tools like **Trimmomatic**
 4. **Alignment**  
    Align reads to the reference genome using **STAR**.
 5. **Read counting**  
@@ -52,5 +52,32 @@ All three implementations (Bash, Snakemake, and Nextflow) follow the same biolog
 6. **Differential expression analysis**  
    Use **DESeq2** (in R) to identify significantly differentially expressed genes between conditions.
 7. **Optional downstream analysis**  
-   Includes **PCA**, **volcano plots**, and **clustering** to visualize sample variation and DEG patterns.
+   Includes  **volcano plots**, and **heatmaps** to visualize sample variation and DEG patterns.
+
+## Workflow Comparison
+
+This table compares the Bash, Snakemake, and Nextflow implementations across the key evaluation criteria defined above.
+
+| Feature           | Bash-linear                     | Snakemake                                    | Nextflow                                     |
+|-------------------|----------------------------------|-----------------------------------------------|----------------------------------------------|
+| **Ease of use**   | ✅ Beginner-friendly (at first)  | ⚠️ Some syntax learning required              | ⚠️ More abstract and DSL-heavy                |
+| **Reproducibility** | ❌ Manual logging, fragile      | ✅ Full dependency tracking + logs            | ✅ Excellent reproducibility with containers  |
+| **Resumability**  | ❌ Must restart manually          | ✅ Can resume with `--rerun-incomplete`       | ✅ Built-in checkpointing and caching         |
+| **Maintainability** | ❌ Hard to update safely         | ✅ Modular rules make updates easy            | ✅ Modular + reusable with process isolation  |
+| **Container Support** | ❌ None by default            | ✅ Native `singularity:`/`conda` per rule     | ✅ Native Docker/Singularity support          |
+
+---
+
+✅ = Strong  
+⚠️ = Moderate / learning curve  
+❌ = Weak / missing
+
+---
+
+**Interpretation**:  
+- **Bash** is approachable but brittle. Great for quick one-offs, bad for scaling or sharing.
+- **Snakemake** hits the sweet spot between usability and reproducibility — especially on local systems or HPCs.
+- **Nextflow** is more powerful and flexible (esp. for cloud/HPC), but has a steeper learning curve and more complex syntax.
+
+
 
