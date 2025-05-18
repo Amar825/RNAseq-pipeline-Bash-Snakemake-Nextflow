@@ -59,6 +59,7 @@ This Snakemake pipeline was run locally using:
 
 ```bash
 snakemake --use-singularity --cores 4
+```
 
 ## Rule Summary
 
