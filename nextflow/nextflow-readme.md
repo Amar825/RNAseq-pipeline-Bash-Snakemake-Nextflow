@@ -37,6 +37,7 @@ Run the workflow with:
 
 ```bash
 nextflow run main.nf -profile local,singularity
+```
 
 ### `main.nf`
 
