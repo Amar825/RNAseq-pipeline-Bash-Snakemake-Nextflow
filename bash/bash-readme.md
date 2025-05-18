@@ -25,7 +25,7 @@ while read id; do
 done < SRR_Acc_List.txt
 ```
 - `--split-files` separates paired-end reads into two files (`_1.fastq` and `_2.fastq`), which is required for downstream tools like STAR for paired-end alignment.
-- `--threads 4` enables multi-threaded downloading what basically means if your computer will use 4 CPU threads in parallel insted on 1 which is default to speeed up conversion from SRA to fastq
+- `--threads 4` enables multi-threaded downloading, which basically means that your computer will use 4 CPU threads in parallel instead of 1, which is the default, to speed up conversion from SRA to fastq format.
 
 
 
