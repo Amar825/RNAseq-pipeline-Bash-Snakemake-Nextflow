@@ -100,6 +100,7 @@ If, after trimming, a read ends up shorter than 36 bases, it’s discarded.
 Reads that short usually don’t align well or uniquely, so better to drop them.
 
 ### 3. Run FastQC on Trimmed FASTQ Files
+Now that we have removed the adapter and contaminants, it's time to perform the Quality control again, We use a similar method as before.
 ```bash
 mkdir trimmed_fastqc
 fastqc trimmed_fastq/*.fastq -o trimmed_fastqc -t 4
