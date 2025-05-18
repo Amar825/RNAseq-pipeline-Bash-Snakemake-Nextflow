@@ -99,6 +99,12 @@ Think of it as a final sweep for junky bases stuck at the end.
 If, after trimming, a read ends up shorter than 36 bases, it’s discarded.
 Reads that short usually don’t align well or uniquely, so better to drop them.
 
+### 3. Run FastQC on Trimmed FASTQ Files
+```bash
+mkdir trimmed_fastqc
+fastqc trimmed_fastq/*.fastq -o trimmed_fastqc -t 4
+```
+
 ![FastQC quality plot for SRR479052 after trimming](images/post_trim_QC.png)
 
 
