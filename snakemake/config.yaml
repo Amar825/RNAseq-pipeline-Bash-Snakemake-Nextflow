@@ -1,1 +1,35 @@
+samples:
+  - SRR479052
+  - SRR479053
+  - SRR479054
+  - SRR479055
+  - SRR479056
+  - SRR479057
+  - SRR479058
+  - SRR479059
+  - SRR479060
+  - SRR479061
+  - SRR479062
+  - SRR479063
+  - SRR479064
+  - SRR479065
+  - SRR479066
+  - SRR479067
+  - SRR479068
+  - SRR479069
+  - SRR479070
+  - SRR479071
+  - SRR479072
+  - SRR479073
 
+reference:
+  genome: "reference/genome.fa"
+  gtf: "reference/annotation.gtf"
+  star_index: "star_index"
+  adapters: "TruSeq3-PE.fa"
+
+trimmomatic:
+  threads: 4
+  minlen: 36
+  slidingwindow: "4:20"
+  trailing: 20
