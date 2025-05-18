@@ -9,12 +9,13 @@ As already mentioned in the main README.md file, I am using RNA-seq data from th
 ## Raw Data Download
 To begin RNA-seq analysis, we first need to download the raw sequencing data from NCBI’s Sequence Read Archive (SRA). We use the `fasterq-dump` tool from the **SRA Toolkit**, which is faster than the older `fastq-dump`.
 
-### 1. Requirements
+### Requirements
 
-- [SRA Toolkit](https://github.com/ncbi/sra-tools)
-- A list of SRA accession IDs (e.g. SRR numbers) in a plain text file
+- SRA Toolkit (`fasterq-dump`)
+- Accession list of SRR IDs (`SRR_Acc_List.txt`)
 
-Install SRA Toolkit using Conda:
+The SRR accession list was retrieved from the [NCBI SRA Run Selector](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=GSE37211) by exporting the "Accession List" for the study. This list was saved as `SRR_Acc_List.txt`, containing one SRR ID per line.
 
-```bash
-conda install -c bioconda sra-tools
+
+
+
