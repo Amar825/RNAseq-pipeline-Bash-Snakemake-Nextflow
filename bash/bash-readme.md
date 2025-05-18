@@ -49,6 +49,26 @@ That's expected, this kind of profile is common in Illumina paired-end data, esp
 
 Now we use `Trimmomatic` to clean things up — remove adapters and trim those low-quality tails to get our reads ready for alignment.
 
+### 2. Adapter removal with Trimmomatic
+We use this `run_trimmomatic_all.sh` script to run the trim operations to all the samples
+
+```bash
+for file in rawReads/*_1.fastq
+    sample=$(basename "$file" _1.fastq)
+    echo "Processing $sample.."
+        trimmomatic PE -threads 4 \
+      raw_fastq/${sample}_1.fastq raw_fastq/${sample}_2.fastq \
+      trimmed_fastq/${sample}_1P.fastq trimmed_fastq/${sample}_1U.fastq \
+      trimmed_fastq/${sample}_2P.fastq trimmed_fastq/${sample}_2U.fastq \
+      ILLUMINACLIP:$ADAPTERS:2:30:10 \
+      SLIDINGWINDOW:4:20 TRAILING:20 MINLEN:36
+
+    echo "Finished $sample"
+done
+
+echo "All samples processed."
+```
+
 
 
 
