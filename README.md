@@ -7,6 +7,13 @@ This bioinformatic pipeline performs a basic RNA-seq analysis. We start by downl
 
 In every method, the fundamental processes are going to be the same, but there are going to be different ways to achieve that. Each method offers a unique value, which we shall experience on our own, and document like our lives depend on it.
 
+## Objectives
+This is a purely learning project to understand the workflow differences of Bash, Snakemake, and Nextflow. We are going to evaluate the usability and reproducibility of these workflows. Ideally, I would like to benchmark the runtimes as well. But this project was run on a modest 16GB RAM laptop, not a realistic environment for evaluating performance, since I can't make use of parallel computing due to the risk of melting my laptop. So we are going to focus on these criteria:
+1. Ease of use for new users (learning curve)
+2. Reproducibility (Can we trace the output?)
+3. Resumability (Can the pipeline recover from a crash without doing everything again?)
+4. Maintainabilty (Is it easy to update one step in a process without crashing the whole damn thing?)
+5. Container support (How easy is it to set up and use Docker/Singularity?)
 This project is documented as if I am explaining this to a friend. No AI fluff, no big  and complex sentences.
 I might write a medium article about it going in much details about the codes and stuff, but in this repo I will stick to explaining the **conceptual elements and rationale** behind every steps and parameters. So basically explaining the whys.
 
@@ -21,6 +28,8 @@ This pipeline analyzes RNA-seq data from the GEO dataset **[GSE37211](https://ww
   - OHT (24h, 48h)
 - **Experimental Focus**: Transcriptomic response to DPN and Tamoxifen (OHT), targeting estrogen receptor beta.
 - **Source**: Haglund et al., *J Clin Endocrinol Metab*, 2012 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/23024189/))
+
+## Pipeline overview
 
 
 ***Why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called **[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
