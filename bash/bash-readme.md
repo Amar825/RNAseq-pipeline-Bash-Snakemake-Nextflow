@@ -122,9 +122,9 @@ STAR works in two steps:
 
 1. **Generate genome index files** (only once) In this step we must provide the reference genome sequence (FASTA file) and annotations (GTF file), from which STAR generates genome indexes used in the 2nd (mapping) step.
    ```bash
-mkdir -p star_index
+    mkdir -p star_index
 
-STAR --runThreadN 4 \
+    STAR --runThreadN 4 \
      --runMode genomeGenerate \
      --genomeDir $index_path \
      --genomeFastaFiles $fasta_path/genome.fa \
