@@ -4,7 +4,8 @@ This bioinformatic pipeline performs a basic RNA-seq analysis. We start by downl
 1. [Bash-linear](bash/bash-readme.md)
 2. [Snakemake](snakemake/snakemake-readme.md)
 3. [Nextflow](nextflow/nextflow-readme.md)
-In every method, the fundamental processes are going to be the same, but there are going to be different ways to achieve that. Each method offers a unique value, which we shall experience on our own, and document like our lives depend on it.
+
+In every method, the fundamental processes are going to be the same, but there are going to be different ways to achieve that. Each method offers a unique value, which we shall experience on our own, and document it.
 
 ## Objectives
 This is a purely learning project to understand the workflow differences of Bash, Snakemake, and Nextflow. We are going to evaluate the usability and reproducibility of these workflows. Ideally, I would like to benchmark the runtimes as well. But this project was run on a modest 16GB RAM laptop, not a realistic environment for evaluating performance, since I can't make use of parallel computing due to the risk of melting my laptop. So we are going to focus on these criteria:
