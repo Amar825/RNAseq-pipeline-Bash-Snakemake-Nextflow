@@ -53,6 +53,7 @@ Now we use `Trimmomatic` to clean things up — remove adapters and trim those l
 We use this `run_trimmomatic_all.sh` script to run the trim operations to all the samples
 
 ```bash
+ADAPTERS="TruSeq3-PE.fa"
 for file in rawReads/*_1.fastq
     sample=$(basename "$file" _1.fastq)
     echo "Processing $sample.."
@@ -68,7 +69,32 @@ done
 
 echo "All samples processed."
 ```
+A lot to unpack here. Let's start with `ILLUMINACLIP:$ADAPTERS:2:30:10`.
 
+This part tells Trimmomatic to look for adapter sequences in the file we gave it (`TruSeq3-PE.fa`). These are the standard Illumina adapter sequences that sometimes get read into your data — especially when your fragment size is shorter than the read length.
+
+Now the three numbers at the end (`2:30:10`) control how strict the adapter trimming is.
+
+#### First: `2` — the max mismatches allowed in the seed
+
+When Trimmomatic looks for an adapter, it starts by aligning a short initial stretch (called a "seed") from your read to the adapter sequence.  
+This number (`2`) says: **you can have up to 2 mismatches between the read and the adapter in that seed region**.
+
+Think of it like: "Let me quickly check if this chunk of the read *sort of* looks like the adapter — even if it’s not a perfect match."
+
+#### Second: `30` — the palindrome clip threshold
+
+This one’s specific to **paired-end reads**. Sometimes, when the actual DNA fragment is short, your reads can read right through the insert and into the adapter on the *other* end. Trimmomatic tries to detect this kind of adapter "overlap" by aligning the reverse complement of one read to the start of the other — a palindrome match.
+
+This value (`30`) is a **match score threshold**. A higher number means **"be more confident before you trim."**
+
+So `30` means: "Only trim if the match to the adapter is pretty strong."
+
+#### Third: `10` — the simple clip threshold
+
+This handles the more basic case: there's a partial adapter stuck on the end of a read (like a tail). `10` is the **score threshold for clipping it**.
+
+It’s more relaxed than the palindrome threshold because tail contamination is more common and easier to identify.
 
 
 
