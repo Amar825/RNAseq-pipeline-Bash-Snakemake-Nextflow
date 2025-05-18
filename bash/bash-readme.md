@@ -113,6 +113,9 @@ The adapter contamination is gone. The low-quality tail at the 3' end is mostly 
 
 ## Reads Alignment and Quantification
 Now that our reads are cleaned up, it is time to align them to the reference genome and count how many reads map to each gene.
+We’ll use:
+- `STAR` — a fast, splice-aware aligner that's widely used for RNA-seq, what's a splice-aware aligner, you might ask? It’s one that knows how to deal with **introns**. Unlike DNA-seq, RNA-seq reads often come from **spliced transcripts** — meaning parts of the reads can span across exon–exon junctions. A splice-aware aligner like STAR can handle that. It doesn’t freak out when a read maps partially to one exon and partially to another — it recognizes that’s normal in RNA-seq and aligns accordingly. Without this, you'd miss a huge portion of your data — especially if you're working with eukaryotes where splicing is the rule, not the exception.
+- `featureCounts` — part of the Subread package, to assign mapped reads to genes
 
 
 
