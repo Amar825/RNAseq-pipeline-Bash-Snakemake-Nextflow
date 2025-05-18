@@ -7,5 +7,6 @@ dependencies:
   - fastqc=0.12.1
   - multiqc=1.28
   - trimmomatic=0.39
+  - star=2.7.11b
   - sra-tools=3.1.1
   
