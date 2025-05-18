@@ -1,4 +1,4 @@
-// main.nf
+#!/usr/bin/env nextflow
 
 params.samples = file("samples.txt")
 params.adapters = "TruSeq3-PE.fa"
