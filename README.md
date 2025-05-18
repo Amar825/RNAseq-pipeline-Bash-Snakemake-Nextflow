@@ -14,6 +14,7 @@ This is a purely learning project to understand the workflow differences of Bash
 3. Resumability (Can the pipeline recover from a crash without doing everything again?)
 4. Maintainabilty (Is it easy to update one step in a process without crashing the whole damn thing?)
 5. Container support (How easy is it to set up and use Docker/Singularity?)
+   
 This project is documented as if I am explaining this to a friend. No AI fluff, no big  and complex sentences.
 I might write a medium article about it going in much details about the codes and stuff, but in this repo I will stick to explaining the **conceptual elements and rationale** behind every steps and parameters. So basically explaining the whys.
 
