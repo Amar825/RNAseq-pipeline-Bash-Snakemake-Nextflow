@@ -87,6 +87,18 @@ This value (`30`) is a **match score threshold**. A higher number means **"be mo
 This handles the more basic case: there's a partial adapter stuck on the end of a read (like a tail). `10` is the **score threshold for clipping it**.
 It’s more relaxed than the palindrome threshold because tail contamination is more common and easier to identify.
 
+#### `SLIDINGWINDOW:4:20`
+This tells Trimmomatic to scan the read with a 4-base window. If the **average quality** in that window drops below 20, it trims the read from that point onward.
+It’s basically a smart way to cut off the 3′ tail when quality starts to tank — which we saw clearly in the FastQC plot.
+
+#### `TRAILING:20`
+This goes from the 3′ end and trims off any base with quality below 20, one by one, until it hits something good.
+Think of it as a final sweep for junky bases stuck at the end.
+
+#### `MINLEN:36`
+If, after trimming, a read ends up shorter than 36 bases, it’s discarded.
+Reads that short usually don’t align well or uniquely, so better to drop them.
+
 
 
 
