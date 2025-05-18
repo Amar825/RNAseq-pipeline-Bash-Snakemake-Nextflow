@@ -58,4 +58,4 @@ One count file per sample is written to `counts/`.
 This Snakemake pipeline was run locally using:
 
 ```bash
-snakemake --cores 4
+snakemake --use-singularity --cores 4
