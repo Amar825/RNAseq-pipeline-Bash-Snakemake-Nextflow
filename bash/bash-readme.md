@@ -39,7 +39,9 @@ This step includes initial quality assessment of raw reads, adapter and quality 
 ### 1. Run FastQC on Raw FASTQ Files
 
 ```bash
+mkdir fastqc_raw
 fastqc raw_fastq/*.fastq -o fastqc_raw -t 4
+```
 
 
 
