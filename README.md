@@ -41,22 +41,16 @@ All three implementations (Bash, Snakemake, and Nextflow) follow the same biolog
 
 1. **Download raw FASTQ files**  
    Using `fasterq-dump` to retrieve sequencing data from NCBI SRA.
-
 2. **Quality control**  
    Assess raw read quality using **FastQC**, then summarize across samples using **MultiQC**.
-
 3. **Trimming** *(if needed)*  
    Adapter and quality trimming using tools like **Trim Galore** or **fastp** (optional, dataset-dependent).
-
 4. **Alignment**  
    Align reads to the reference genome using **STAR**.
-
 5. **Read counting**  
    Quantify gene-level expression using **featureCounts**.
-
 6. **Differential expression analysis**  
    Use **DESeq2** (in R) to identify significantly differentially expressed genes between conditions.
-
 7. **Optional downstream analysis**  
    Includes **PCA**, **volcano plots**, and **clustering** to visualize sample variation and DEG patterns.
 
