@@ -59,3 +59,62 @@ This Snakemake pipeline was run locally using:
 
 ```bash
 snakemake --use-singularity --cores 4
+
+## Rule Summary
+
+Each processing step is implemented as a Snakemake rule, with dependencies handled automatically. Here's a breakdown:
+
+---
+
+### `fastqc_raw`
+Runs FastQC on the original untrimmed FASTQ files.  
+**Container**: `fastqc` from BioContainers  
+**Output**: `.html` reports → `fastqc_raw/`
+
+```python
+singularity: config["singularity_images"]["fastqc"]
+```
+### `trimmomatic`
+
+Trims adapters and low-quality bases using Trimmomatic.  
+Only paired reads are retained and used for downstream processing.
+
+**Container**: `trimmomatic` from BioContainers  
+**Output**: `_1P.fastq`, `_2P.fastq` → `trimmed_fastq/`
+
+```python
+singularity: config["singularity_images"]["trimmomatic"]
+```
+### `fastqc_trimmed`
+
+Runs FastQC again, this time on the trimmed reads.  
+This step verifies that trimming successfully removed adapter sequences and improved read quality.
+
+**Container**: same `fastqc` container as the raw read step  
+**Output**: `.html` reports → `fastqc_trimmed/`
+
+---
+
+### `star_align`
+
+Aligns trimmed paired-end reads to the reference genome using STAR.  
+The STAR genome index must be generated separately beforehand.
+
+**Container**: `star` from BioContainers  
+**Output**: sorted BAM file → `star_aligned/`
+
+```python
+singularity: config["singularity_images"]["star"]
+```
+### `featurecounts`
+Counts reads per gene using Subread's `featureCounts`.  
+Reads are assigned to **exons** and summarized at the **gene level** using the `gene_id` attribute in the GTF file.
+
+**Container**: `subread` from BioContainers  
+**Output**: `{sample}_gene_counts.txt` → `counts/`
+
+```python
+singularity: config["singularity_images"]["featurecounts"]
+```
+
+
