@@ -1,0 +1,11 @@
+name: bioinfo-env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - fastqc=0.12.1
+  - multiqc=1.28
+  - trimmomatic=0.39
+  - sra-tools=3.1.1
+  
