@@ -1,11 +1,20 @@
 # RNA seq pipeline (Bash-linear)
 
-This is a bioinformatic pipeline that performs a basic RNA-seq analysis, we start by downloading the FASTQ files and end with a Differential Expression Genes list.
+In this method, I am going to use the most fundamental way of doing an RNA-seq analysis, the bash-way. We are going to run these bash commands one by one, and at the end, we are also going to automate it. Not fully though, because we still need to intervene during the QC stages
 
-This project is documented as if I am explaining this to a friend. No AI fluff, no big  and complex sentences.
-I might write a medium article about it going in much details about the codes and stuff, but in this repo I will stick to explaining the conceptual elements and rationale behind every steps and parameters. So basically explaining the whys.
 
 ## Dataset
 As already mentioned in the main README.md file, I am using RNA-seq data from the GEO dataset **[GSE37211](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37211)**, which investigates estrogen receptor signaling in parathyroid adenoma cells.
 
- 
+## Raw Data Download
+To begin RNA-seq analysis, we first need to download the raw sequencing data from NCBI’s Sequence Read Archive (SRA). We use the `fasterq-dump` tool from the **SRA Toolkit**, which is faster than the older `fastq-dump`.
+
+### 1. Requirements
+
+- [SRA Toolkit](https://github.com/ncbi/sra-tools)
+- A list of SRA accession IDs (e.g. SRR numbers) in a plain text file
+
+Install SRA Toolkit using Conda:
+
+```bash
+conda install -c bioconda sra-tools
