@@ -42,7 +42,7 @@ This step includes initial quality assessment of raw reads, adapter and quality 
 mkdir fastqc_raw
 fastqc raw_fastq/*.fastq -o fastqc_raw -t 4
 ```
-![FastQC quality plot for SRR479052](images/FASTQC.png
+![FastQC quality plot for SRR479052](images/FASTQC.png)
 
 Clearly, there's adapter contamination at the end of the reads, along with a drop in quality scores.  
 That's expected, this kind of profile is common in Illumina paired-end data, especially near the 3′ end.
