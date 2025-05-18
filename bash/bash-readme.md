@@ -42,6 +42,8 @@ This step includes initial quality assessment of raw reads, adapter and quality 
 mkdir fastqc_raw
 fastqc raw_fastq/*.fastq -o fastqc_raw -t 4
 ```
+![FastQC quality plot for SRR479052](images/FASTQC.png)
+
 
 
 
