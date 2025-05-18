@@ -11,7 +11,7 @@ To begin RNA-seq analysis, we first need to download the raw sequencing data fro
 
 ### Requirements
 
-- SRA Toolkit (`fasterq-dump`)
+- SRA Toolkit (`fasterq-dump`) (My version was 
 - Accession list of SRR IDs (`SRR_Acc_List.txt`)
 
 The SRR accession list was retrieved from the [NCBI SRA Run Selector](https://www.ncbi.nlm.nih.gov/Traces/study/?acc=GSE37211) by exporting the "Accession List" for the study. This list was saved as `SRR_Acc_List.txt`, containing one SRR ID per line.
@@ -27,6 +27,19 @@ done < SRR_Acc_List.txt
 - `--split-files` separates paired-end reads into two files (`_1.fastq` and `_2.fastq`), which is required for downstream tools like STAR for paired-end alignment.
 - `--threads 4` enables multi-threaded downloading, which basically means that your computer will use 4 CPU threads in parallel instead of 1, which is the default, to speed up conversion from SRA to fastq format.
 
+## Read Preprocessing
+This step includes initial quality assessment of raw reads, adapter and quality trimming using **Trimmomatic**, and re-evaluation of trimmed reads. Trimming improves alignment accuracy and reduces noise in downstream analyses.
+
+### Tools Used
+
+- `FastQC`: for quality assessment
+- `MultiQC`: for summarizing FastQC results
+- `Trimmomatic`: for adapter removal and quality trimming
+
+### 1. Run FastQC on Raw FASTQ Files
+
+```bash
+fastqc raw_fastq/*.fastq -o fastqc_raw -t 4
 
 
 
