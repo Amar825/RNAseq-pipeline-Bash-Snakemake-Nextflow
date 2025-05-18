@@ -33,3 +33,9 @@ trimmomatic:
   minlen: 36
   slidingwindow: "4:20"
   trailing: 20
+  singularity_images:
+  fastqc: "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
+  trimmomatic: "https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2"
+  star: "https://depot.galaxyproject.org/singularity/star:2.7.10b--0"
+  featurecounts: "https://depot.galaxyproject.org/singularity/subread:2.0.3--h9a82719_1"
+
