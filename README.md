@@ -30,9 +30,33 @@ This pipeline analyzes RNA-seq data from the GEO dataset **[GSE37211](https://ww
 - **Experimental Focus**: Transcriptomic response to DPN and Tamoxifen (OHT), targeting estrogen receptor beta.
 - **Source**: Haglund et al., *J Clin Endocrinol Metab*, 2012 ([PubMed](https://pubmed.ncbi.nlm.nih.gov/23024189/))
 
-## Pipeline overview
 
 
 ***Why this dataset?*** It was one of the complete datasets suggested under 50GB during one of my master's courses called **[Bioinformatic Methods for Next Generation Sequencing Analysis](https://www.ntnu.edu/studies/courses/MOL8008#tab=omEmnet)** at NTNU.
 
 Usually, for personal learning projects, people tend to choose only specific parts of the large sequencing data. It is okay for learning purposes, but it won't lead to replicating the paper's figures or any meaningful results. Depending upon your hardware (I did it in 16gb RAM device), this should not pose too big a problem as long as you run sample by sample.
+
+## Pipeline overview
+All three implementations (Bash, Snakemake, and Nextflow) follow the same biological logic:
+
+1. **Download raw FASTQ files**  
+   Using `fasterq-dump` to retrieve sequencing data from NCBI SRA.
+
+2. **Quality control**  
+   Assess raw read quality using **FastQC**, then summarize across samples using **MultiQC**.
+
+3. **Trimming** *(if needed)*  
+   Adapter and quality trimming using tools like **Trim Galore** or **fastp** (optional, dataset-dependent).
+
+4. **Alignment**  
+   Align reads to the reference genome using **STAR**.
+
+5. **Read counting**  
+   Quantify gene-level expression using **featureCounts**.
+
+6. **Differential expression analysis**  
+   Use **DESeq2** (in R) to identify significantly differentially expressed genes between conditions.
+
+7. **Optional downstream analysis**  
+   Includes **PCA**, **volcano plots**, and **clustering** to visualize sample variation and DEG patterns.
+
