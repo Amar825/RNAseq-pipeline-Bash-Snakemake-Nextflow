@@ -117,5 +117,18 @@ Reads are assigned to **exons** and summarized at the **gene level** using the `
 ```python
 singularity: config["singularity_images"]["featurecounts"]
 ```
+## Containerization with Singularity
 
+Each rule in the workflow uses the `singularity:` directive to run inside a specific container.  
+This ensures that each tool is executed in a controlled environment with fixed versions — improving reproducibility and avoiding dependency conflicts.
+
+All image paths are defined centrally in `config.yaml` like this:
+
+```yaml
+singularity_images:
+  fastqc: "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
+  trimmomatic: "https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2"
+  star: "https://depot.galaxyproject.org/singularity/star:2.7.10b--0"
+  featurecounts: "https://depot.galaxyproject.org/singularity/subread:2.0.3--h9a82719_1"
+```
 
