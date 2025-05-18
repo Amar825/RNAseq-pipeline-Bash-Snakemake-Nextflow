@@ -15,6 +15,7 @@ rule fastqc_raw:
         "fastqc_raw/{sample}_1_fastqc.html",
         "fastqc_raw/{sample}_2_fastqc.html"
     threads: 2
+    singularity: config["singularity_images"]["fastqc"]
     shell:
         "fastqc {input.fq1} {input.fq2} -o fastqc_raw -t {threads}"
 
@@ -28,6 +29,7 @@ rule trimmomatic:
         fq2p = "trimmed_fastq/{sample}_2P.fastq",
         fq2u = "trimmed_fastq/{sample}_2U.fastq"
     threads: config["trimmomatic"]["threads"]
+    singularity: config["singularity_images"]["trimmomatic"]
     shell:
         """
         trimmomatic PE -threads {threads} \
@@ -60,6 +62,7 @@ rule star_align:
     threads: 4
     params:
         prefix = "star_aligned/{sample}_"
+    config["singularity_images"]["star"]
     shell:
         """
         STAR --runThreadN {threads} \
@@ -75,6 +78,7 @@ rule featurecounts:
     output:
         "counts/{sample}_gene_counts.txt"
     threads: 4
+    config["singularity_images"]["featurecounts"]
     shell:
         """
         featureCounts -T {threads} -p -t exon -g gene_id \
