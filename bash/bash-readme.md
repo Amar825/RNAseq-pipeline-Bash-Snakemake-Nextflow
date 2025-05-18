@@ -165,28 +165,7 @@ featureCounts -T 4 -p -t exon -g gene_id \
 - `-o`: name of the output file. It’s a plain-text table with one row per gene and one column for your sample’s counts.
   Run `mapping_counting_PE.sh` file, making necessary changes according to your working directory. It will run on all samples and at the end, you will get a gene count file for each sample.
   Now we need to merge these per-sample gene count files into a single count matrix using this `merge_counts.R` script.
-  ```R
-  library(tidyverse)
 
-    # Set path to your count files
-count_files <- list.files(path = "counts/", pattern = "_gene_counts.txt$", full.names = TRUE)
-
-    # Read and clean all count files
-count_list <- lapply(count_files, function(file) {
-  df <- read.delim(file, comment.char = "#", stringsAsFactors = FALSE)
-  df <- df[, c("Geneid", ncol(df))]  # Keep only Geneid and count column
-  sample_name <- tools::file_path_sans_ext(basename(file))
-  sample_name <- sub("_gene_counts", "", sample_name)
-  colnames(df)[2] <- sample_name
-  return(df)
-})
-
-    # Merge all into one table by Geneid
-merged_counts <- reduce(count_list, full_join, by = "Geneid")
-
-    # Save to file
-write.table(merged_counts, file = "counts/merged_gene_counts.tsv", sep = "\t", row.names = FALSE, quote = FALSE)
-```
   
 
 
