@@ -28,14 +28,37 @@ reference:
   star_index: "star_index"
   adapters: "TruSeq3-PE.fa"
 
+# === STAR Alignment ===
+star:
+  threads: 8  # Threads for alignment
+  sjdbOverhang: 100  # Read length - 1 (critical for splice junctions)
+  genome_index: "reference/star_index"  # Directory for STAR index
+  generate_index: False  # Set to True to build index automatically
+  # Memory limits (prevent OOM)
+  resources:
+    mem_mb: 30000  # 30GB RAM for hg38
+
+# === Trimmomatic (Quality Trimming) ===
 trimmomatic:
   threads: 4
-  minlen: 36
-  slidingwindow: "4:20"
-  trailing: 20
-  singularity_images:
+  minlen: 36  # Minimum read length
+  slidingwindow: "4:20"  # Window size:quality threshold
+  trailing: 20  # Remove trailing bases below this quality
+  # Memory limits
+  resources:
+    mem_mb: 8000  # 8GB RAM
+
+# === featureCounts (Read Counting) ===
+featurecounts:
+  strandedness: 0  # 0=unstranded, 1=stranded, 2=reverse
+  feature_type: "exon"  # Count reads overlapping exons
+  id_attribute: "gene_id"  # Aggregate counts by gene_id
+
+# === Singularity Containers (Reproducibility) ===
+singularity_images:
   fastqc: "https://depot.galaxyproject.org/singularity/fastqc:0.11.9--0"
   trimmomatic: "https://depot.galaxyproject.org/singularity/trimmomatic:0.39--hdfd78af_2"
   star: "https://depot.galaxyproject.org/singularity/star:2.7.10b--0"
   featurecounts: "https://depot.galaxyproject.org/singularity/subread:2.0.3--h9a82719_1"
+  multiqc: "https://depot.galaxyproject.org/singularity/multiqc:1.14--pyhdfd78af_0"
 
