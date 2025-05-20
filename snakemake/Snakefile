@@ -1,87 +1,136 @@
 import os
 
+# Load config (mandatory for reproducibility)
 configfile: "config.yaml"
-SAMPLES = config["samples"]
 
+# === Sample Setup ===
+# Extract sample names from config
+SAMPLES = list(config["samples"].keys())
+
+# === Rule: All (Default Target) ===
 rule all:
     input:
-        expand("counts/{sample}_gene_counts.txt", sample=SAMPLES)
+        "multiqc_report.html",  # Final QC report
+        expand("counts/{sample}_gene_counts.txt", sample=SAMPLES)  # Gene counts
 
-rule fastqc_raw:
+# === FastQC (Raw & Trimmed Reads) ===
+def fastqc_output(wildcards):
+    """Generate FastQC output paths for raw/trimmed reads."""
+    return [
+        f"fastqc_{wildcards.step}/{wildcards.sample}_{read}_fastqc.html"
+        for read in ["1", "2"]
+    ]
+
+rule fastqc:
+    """
+    Run FastQC on raw or trimmed FASTQ files.
+    Uses `step` wildcard: 'raw' or 'trimmed'.
+    """
     input:
-        fq1 = "raw_fastq/{sample}_1.fastq",
-        fq2 = "raw_fastq/{sample}_2.fastq"
+        fq1 = "{dir}/{sample}_1.fastq.gz",
+        fq2 = "{dir}/{sample}_2.fastq.gz"
     output:
-        "fastqc_raw/{sample}_1_fastqc.html",
-        "fastqc_raw/{sample}_2_fastqc.html"
+        fastqc_output
     threads: 2
     singularity: config["singularity_images"]["fastqc"]
     shell:
-        "fastqc {input.fq1} {input.fq2} -o fastqc_raw -t {threads}"
+        "fastqc {input.fq1} {input.fq2} -o fastqc_{wildcards.dir} -t {threads}"
 
+# === Trimmomatic (Read Trimming) ===
 rule trimmomatic:
+    """
+    Trim adapters and low-quality bases using Trimmomatic.
+    Only keeps paired reads for downstream analysis.
+    """
     input:
-        fq1 = "raw_fastq/{sample}_1.fastq",
-        fq2 = "raw_fastq/{sample}_2.fastq"
+        fq1 = "raw_fastq/{sample}_1.fastq.gz",
+        fq2 = "raw_fastq/{sample}_2.fastq.gz"
     output:
-        fq1p = "trimmed_fastq/{sample}_1P.fastq",
-        fq1u = "trimmed_fastq/{sample}_1U.fastq",
-        fq2p = "trimmed_fastq/{sample}_2P.fastq",
-        fq2u = "trimmed_fastq/{sample}_2U.fastq"
+        fq1_paired = temp("trimmed_fastq/{sample}_1P.fastq.gz"),
+        fq2_paired = temp("trimmed_fastq/{sample}_2P.fastq.gz"),
+        log = "logs/trimmomatic/{sample}.log"
     threads: config["trimmomatic"]["threads"]
+    resources:
+        mem_mb = config["trimmomatic"]["resources"]["mem_mb"]
     singularity: config["singularity_images"]["trimmomatic"]
     shell:
         """
         trimmomatic PE -threads {threads} \
         {input.fq1} {input.fq2} \
-        {output.fq1p} {output.fq1u} \
-        {output.fq2p} {output.fq2u} \
+        {output.fq1_paired} /dev/null \
+        {output.fq2_paired} /dev/null \
         ILLUMINACLIP:{config[reference][adapters]}:2:30:10 \
         SLIDINGWINDOW:{config[trimmomatic][slidingwindow]} \
         TRAILING:{config[trimmomatic][trailing]} \
-        MINLEN:{config[trimmomatic][minlen]}
+        MINLEN:{config[trimmomatic][minlen]} \
+        2> {output.log}
         """
 
-rule fastqc_trimmed:
-    input:
-        fq1 = "trimmed_fastq/{sample}_1P.fastq",
-        fq2 = "trimmed_fastq/{sample}_2P.fastq"
-    output:
-        "fastqc_trimmed/{sample}_1P_fastqc.html",
-        "fastqc_trimmed/{sample}_2P_fastqc.html"
-    threads: 2
-    shell:
-        "fastqc {input.fq1} {input.fq2} -o fastqc_trimmed -t {threads}"
-
+# === STAR Alignment ===
 rule star_align:
+    """
+    Align trimmed reads to the reference genome using STAR.
+    Generates a sorted BAM file and index.
+    """
     input:
-        fq1 = "trimmed_fastq/{sample}_1P.fastq",
-        fq2 = "trimmed_fastq/{sample}_2P.fastq"
+        fq1 = "trimmed_fastq/{sample}_1P.fastq.gz",
+        fq2 = "trimmed_fastq/{sample}_2P.fastq.gz"
     output:
-        bam = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam"
-    threads: 4
-    params:
-        prefix = "star_aligned/{sample}_"
-    config["singularity_images"]["star"]
+        bam = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam",
+        bai = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam.bai"
+    threads: config["star"]["threads"]
+    resources:
+        mem_mb = config["star"]["resources"]["mem_mb"]
+    singularity: config["singularity_images"]["star"]
     shell:
         """
         STAR --runThreadN {threads} \
-             --genomeDir {config[reference][star_index]} \
+             --genomeDir {config[star][genome_index]} \
              --readFilesIn {input.fq1} {input.fq2} \
-             --outFileNamePrefix {params.prefix} \
-             --outSAMtype BAM SortedByCoordinate
+             --readFilesCommand zcat \
+             --outSAMtype BAM SortedByCoordinate \
+             --outFileNamePrefix star_aligned/{wildcards.sample}_ \
+             --sjdbGTFfile {config[reference][gtf]} \
+             --sjdbOverhang {config[star][sjdbOverhang]} \
+             --outSAMstrandField intronMotif  # For strandedness
+        samtools index {output.bam}  # Index BAM for IGV
         """
 
+# === featureCounts (Read Counting) ===
 rule featurecounts:
+    """
+    Count reads per gene using featureCounts.
+    Handles strandedness via config.yaml.
+    """
     input:
-        bam = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam"
+        bam = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam",
+        bai = "star_aligned/{sample}_Aligned.sortedByCoord.out.bam.bai"
     output:
-        "counts/{sample}_gene_counts.txt"
+        counts = "counts/{sample}_gene_counts.txt",
+        summary = "logs/featurecounts/{sample}.summary"
     threads: 4
-    config["singularity_images"]["featurecounts"]
+    singularity: config["singularity_images"]["featurecounts"]
     shell:
         """
-        featureCounts -T {threads} -p -t exon -g gene_id \
+        featureCounts -T {threads} \
+            -s {config[featurecounts][strandedness]} \
+            -t {config[featurecounts][feature_type]} \
+            -g {config[featurecounts][id_attribute]} \
             -a {config[reference][gtf]} \
-            -o {output} {input.bam}
+            -o {output.counts} {input.bam}
+        mv {output.counts}.summary {output.summary}
         """
+
+# === MultiQC (Aggregate QC Reports) ===
+rule multiqc:
+    """
+    Aggregate all QC reports (FastQC, Trimmomatic, STAR) into one HTML.
+    """
+    input:
+        expand(["fastqc_raw/{sample}_1_fastqc.html", "fastqc_trimmed/{sample}_1P_fastqc.html"], sample=SAMPLES),
+        expand("logs/trimmomatic/{sample}.log", sample=SAMPLES)
+    output:
+        "multiqc_report.html"
+    singularity: config["singularity_images"]["multiqc"]
+    shell:
+        "multiqc . -f -o ."
